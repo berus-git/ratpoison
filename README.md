@@ -1,0 +1,1 @@
+# Ratpoison ablakkezelő konfigurációs állomány
