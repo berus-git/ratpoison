@@ -1,0 +1,140 @@
+#---------------------------------------------------------------------------------------------------------
+# Berus .ratpoisonrc
+#---------------------------------------------------------------------------------------------------------
+
+# Kikapcsolja a "Welcome to Ratpoison" üzenetet a jobb felső sarokban az indításkor.
+# startup_message off 
+
+#---------------------------------------------------------------------------------------------------------
+# Prefix Kulcs és Globális Beállítások
+#---------------------------------------------------------------------------------------------------------
+
+# Felülírja az alapértelmezett prefix kulcsot (Ctrl+t) a Windows (Super_L) gombra. 
+escape Super_L 
+
+# Ablakokra az osztályokkal hivatkozunk.
+set winname class
+
+# Polybar indítása.
+unmanage panel
+unmanage polybar
+set padding 0 28 0 0
+exec polybar &
+
+# Színek.
+set fgcolor #777777
+set bgcolor black
+set fwcolor #777777
+set bwcolor black
+
+#---------------------------------------------------------------------------------------------------------
+# Programok indítása a Ratpoison indulásakor (exec)
+#---------------------------------------------------------------------------------------------------------
+
+# Beállítja az egérmutatót, +Solaar.
+exec xsetroot -cursor_name left_ptr 
+exec solaar -w hide
+
+# Munkaterületek inicializálása az 'rpws' szkripttel.
+# Az `rpws` (RatPoison WorkSpace) a több virtuális munkafelület kezelésére szolgál.
+exec /usr/bin/rpws init 4 -k 
+
+# Elindítja a 'picom' compositort az árnyékok és átlátszóság kezelésére. 
+exec picom -b
+
+# Beállítja a háttérképet.
+exec /home/berus/.fehbg
+
+# 'Redshift'.
+exec gammastep -P
+
+# Lehessünk 'rootok'.
+exec /usr/libexec/polkit-mate-authentication-agent-1
+
+# Hálózat kezelés.
+exec nm-applet
+
+# Ne aludj el!
+exec caffeine-indicator
+
+# Numlock be.
+exec numlockx on
+
+# Vágólap kezelő.
+exec parcellite
+
+#---------------------------------------------------------------------------------------------------------
+# Egyéni billentyűparancsok definiálása
+#---------------------------------------------------------------------------------------------------------
+
+# 'bind' parancsok: Ezek a parancsok a prefix kulcs (Super_L) lenyomása után lépnek életbe.
+
+# Alapértelmezett terminál felülírása.
+
+bind Return exec alacritty
+
+# Indítsd el a 'dmenu'-t.
+# Ez lecseréli a Ratpoison alapértelmezett, egyszerű parancsválasztóját a testreszabhatóbb dmenu-re.
+# A `--dina-medium-r-normal--12` font és a színek testreszabhatók.
+unbind d 
+bind d exec $(dmenu_path | dmenu -i -b -nb '#000000' -nf '#777777' -sb '#770000' -sf '#ffffff' -fn '--dina-medium-r-normal--12-------*' -p '> ') 
+
+# Indítsd el a 'dmenu'-t ablakváltóként a 'w' billentyűvel.
+# A `ratpoison -c "windows"` listázza a megnyitott ablakokat, amit a dmenu-nek ad át.
+# Az `awk` parancs kivonja az ablak ID-t a kiválasztott sorból.
+unbind w 
+bind w exec $(ratpoison -c "select $(ratpoison -c 'windows' | dmenu -i -p ':: ' | awk '{print $1}')") 
+
+# Program bezárása és keret törlése.
+bind q exec ratpoison -c "delete" -c "remove"
+
+# Vertikális horizontális felosztás.
+bind s exec ratpoison -c "hsplit"
+bind S exec ratpoison -c "vsplit"
+
+# Kilépés a Ratpisonból.
+bind e exec ratpoison -c "quit"
+
+# Hangerő.
+unbind v
+bind v exec alacritty -e pulsemixer
+
+# Teljes képernyő.
+bind f exec ~/.local/bin/fullsc.sh
+
+# 'definekey top' parancsok: Ezek globális parancsok, amelyek a prefix kulcs nélkül is működnek.
+# Ideálisak gyakori, egybillentyűs parancsokhoz.
+
+# A hagyományos Alt+Tab viselkedés felülírása a következő ablakra váltásra.
+definekey top M-Tab next 
+
+# Fókusz az adott keretre 'l,h,j,k' billentyűkkel, +Meta (Alt) billentyűvel.
+definekey top M-l focusright
+definekey top M-h focusleft
+definekey top M-j focusdown 
+definekey top M-k focusup
+
+# Képernyőmentés (screenshot) parancs definiálása.
+# Először létrehozunk egy aliast a parancsnak.
+alias sshot exec import -window root ~/screenshot-$(date +%F%R).jpg 
+# Ezután a globális parancsot definiáljuk a `PrintScrn` billentyűre.
+definekey top Print sshot 
+
+#---------------------------------------------------------------------------------------------------------
+# Munkaterületek és ablakok közötti navigáció
+#---------------------------------------------------------------------------------------------------------
+
+# Munkaterületek elérése a prefix kulcs és egy szám segítségével (pl. Super_L + 1).
+# Ez a `rpws` szkripttel beállított munkaterületekhez tartozik.
+bind 1 exec rpws 1 
+bind 2 exec rpws 2 
+bind 3 exec rpws 3 
+bind 4 exec rpws 4 
+
+#---------------------------------------------------------------------------------------------------------
+# Ablak- és Keretkezelés
+#---------------------------------------------------------------------------------------------------------
+
+# A keret szegélyének vastagságát állítja. Ha 0 maximalizálja a képernyő területét, de ha 
+# a terminálokban üres terület keletkezik, az 'internalBorder' opcióval kell beállítani a terminálban.
+set border 3 
