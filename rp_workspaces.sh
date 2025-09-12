@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 ratpoison -c 'set winfmt %g %n %t'
 windows=$(ratpoison -c windows)
 current_ws=$(ratpoison -c 'getenv wspl')
