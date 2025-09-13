@@ -46,7 +46,7 @@ exec picom -b
 exec /home/berus/.fehbg
 
 # 'Redshift'.
-exec gammastep -P
+exec gammastep-indicator
 
 # Lehessünk 'rootok'.
 exec /usr/libexec/polkit-mate-authentication-agent-1
@@ -102,6 +102,11 @@ bind v exec alacritty -e pulsemixer
 # Teljes képernyő.
 bind f exec ~/.local/bin/fullsc.sh
 
+# Leállítás, altatás, úrjra indítás, +Meta (Alt).
+bind M-p exec systemctl poweroff
+bind M-r exec systemctl reboot
+bind M-s exec systemctl suspend
+
 # 'definekey top' parancsok: Ezek globális parancsok, amelyek a prefix kulcs nélkül is működnek.
 # Ideálisak gyakori, egybillentyűs parancsokhoz.
 
@@ -130,6 +135,11 @@ bind 1 exec rpws 1
 bind 2 exec rpws 2 
 bind 3 exec rpws 3 
 bind 4 exec rpws 4 
+bind 5 exec rpws 5 
+bind 6 exec rpws 6 
+bind 7 exec rpws 7 
+bind 8 exec rpws 8 
+bind 9 exec rpws 9 
 
 #---------------------------------------------------------------------------------------------------------
 # Ablak- és Keretkezelés
